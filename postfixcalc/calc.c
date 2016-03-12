@@ -36,6 +36,7 @@ static size_t tos = 0;
  * Decrements the top of the stack pointer and returns the value it refers to.
  *
  * @returns The value that was remove from the top of the stack.
+ * @details Accesses globals stack (r) and tos (rw).
  */
 double pop(void) {
 	return stack[--tos];
@@ -44,6 +45,7 @@ double pop(void) {
 /*!
  * Sets the top of stack to the passed value and increments the top of stack
  * pointer.
+ * @details Accesses globals stack (rw) and tos (rw).
  */
 void push(double v) {
 	stack[tos++] = v;
@@ -54,6 +56,7 @@ void push(double v) {
  *
  * @retval true The stack is empty.
  * @retval false The stack is not empty.
+ * @details Accesses global tos (w).
  */
 bool empty(void) {
 	return tos == 0;
@@ -80,14 +83,14 @@ int calc(char *line, bool fi, bool fa) {
 			i++;
 			continue;
 		}
-		
+
 		v = strtod(i, &end);
 		if (v != 0.0 && i != end) {
 			push(v);
 			i = end;
 			continue;
 		}
-	
+
 		switch (*i) {
 		case '+':
 			push(pop() + pop());
@@ -153,7 +156,7 @@ int split(FILE *f, bool fi, bool fa) {
 
 	while (!feof(f)) {
 		c = getc(f);
-		
+
 		// Read nothing special, buffer that.
 		if (c != '\n' && c != EOF) {
 			ln[i++] = c;
@@ -165,13 +168,13 @@ int split(FILE *f, bool fi, bool fa) {
 		if (i == 0) {
 			continue;
 		}
-		
+
 		// Do the math.
 		r = calc(ln, fi, fa);
 		if (r != 0) {
 			break;
 		}
-		
+
 		i = 0;
 	}
 
@@ -183,7 +186,7 @@ int split(FILE *f, bool fi, bool fa) {
 
 int main(int argc, char **argv) {
 	bool fi = false, fa = false;
-	
+
 	int opt = -1;
 
 	while ((opt = getopt(argc, argv, "ai")) != -1) {
@@ -201,9 +204,9 @@ int main(int argc, char **argv) {
 	}
 
 	if (optind >= argc) {
-		return split(stdin, fi, fa);	
+		return split(stdin, fi, fa);
 	}
-		
+
 	for (int i = optind; i < argc; i++) {
 		FILE *f = fopen(argv[i], "r");
 		int r = split(f, fi, fa);
