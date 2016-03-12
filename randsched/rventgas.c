@@ -1,0 +1,11 @@
+#include "rand.h"
+
+RAND(
+	7,
+
+	"STATUS OK\n",
+	EXIT_SUCCESS,
+
+	"PRESSURE TOO HIGH - IMMEDIATE SHUTDOWN REQUIRED\n",
+	EXIT_FAILURE
+)
